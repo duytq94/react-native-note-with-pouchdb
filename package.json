@@ -1,0 +1,45 @@
+{
+  "name": "NoteWithPouchDb",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@craftzdog/pouchdb-core-react-native": "^7.0.0",
+    "@craftzdog/pouchdb-replication-react-native": "^7.0.0",
+    "base-64": "^0.1.0",
+    "events": "^3.0.0",
+    "moment": "^2.24.0",
+    "pouchdb-adapter-http": "^7.0.0",
+    "pouchdb-adapter-react-native-sqlite": "^2.0.0",
+    "pouchdb-find": "^7.0.0",
+    "pouchdb-mapreduce": "^7.0.0",
+    "pouchdb-upsert": "^2.2.0",
+    "react": "16.8.3",
+    "react-native": "0.59.8",
+    "react-native-gesture-handler": "^1.2.1",
+    "react-native-image-picker": "^0.28.1",
+    "react-native-simple-toast": "0.0.8",
+    "react-native-sqlite-2": "^2.0.2",
+    "react-native-vector-icons": "^6.4.2",
+    "react-navigation": "^3.11.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.4.5",
+    "@babel/runtime": "7.4.5",
+    "babel-jest": "24.8.0",
+    "jest": "24.8.0",
+    "metro-react-native-babel-preset": "0.54.1",
+    "react-test-renderer": "16.8.3"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  }
+}
