@@ -41,13 +41,7 @@ export default class DetailScreen extends Component {
 
     componentDidMount() {
         this.syncDb()
-        // localDetailNoteDb.allDocs()
-        //     .then(response => {
-        //         console.log('aaa', response)
-        //     })
-        //     .catch(err => {
-        //         console.log('bbb', err)
-        //     })
+        this.getDetailNoteFromDb()
 
         // remoteDetailNoteDb
         //     .createIndex({
@@ -73,29 +67,29 @@ export default class DetailScreen extends Component {
     }
 
     syncDb = () => {
-        this.setState({isLoading: true})
         handlerSync = PouchDB.sync(localDetailNoteDb, remoteDetailNoteDb, {
             live: true,
             retry: true,
         })
             .on('change', (info) => {
-                console.log(TAG, 'sync onChange', info)
+                // console.log(TAG, 'sync onChange', info)
             })
             .on('paused', (err) => {
-                console.log(TAG, 'sync onPaused', err)
+                // console.log(TAG, 'sync onPaused', err)
                 this.getDetailNoteFromDb()
             })
             .on('active', () => {
-                console.log(TAG, 'sync onActive')
+                // console.log(TAG, 'sync onActive')
+                this.getDetailNoteFromDb()
             })
             .on('denied', (err) => {
-                console.log(TAG, 'sync onDenied', err)
+                // console.log(TAG, 'sync onDenied', err)
             })
             .on('complete', (info) => {
-                console.log(TAG, 'sync onComplete', info)
+                // console.log(TAG, 'sync onComplete', info)
             })
             .on('error', (err) => {
-                console.log(TAG, 'sync onError', err)
+                // console.log(TAG, 'sync onError', err)
             })
     }
 
@@ -110,7 +104,7 @@ export default class DetailScreen extends Component {
                 use_index: nameIndex.PARENT_ID,
             })
             .then(result => {
-                console.log(TAG, 'find list note', result)
+                // console.log(TAG, 'find list note', result)
                 this.setState({
                     isLoading: false,
                     detailNote: result.docs[0]

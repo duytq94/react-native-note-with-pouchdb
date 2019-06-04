@@ -36,13 +36,7 @@ export default class HomeScreen extends Component {
 
     componentDidMount() {
         this.syncDb()
-        // localNoteDb.allDocs()
-        //     .then(result => {
-        //         console.log('aaa', result)
-        //     })
-        //     .catch(err => {
-        //         console.log('bbb', err)
-        //     })
+        this.getListNoteFromDb()
 
         // remoteNoteDb.createIndex({
         //     index: {
@@ -81,16 +75,16 @@ export default class HomeScreen extends Component {
                 }
             })
             .on('active', () => {
-                console.log(TAG, 'sync onActive')
+                // console.log(TAG, 'sync onActive')
             })
             .on('denied', (err) => {
-                console.log(TAG, 'sync onDenied', err)
+                // console.log(TAG, 'sync onDenied', err)
             })
             .on('complete', (info) => {
-                console.log(TAG, 'sync onComplete', info)
+                // console.log(TAG, 'sync onComplete', info)
             })
             .on('error', (err) => {
-                console.log(TAG, 'sync onError', err)
+                // console.log(TAG, 'sync onError', err)
             })
     }
 
@@ -112,7 +106,7 @@ export default class HomeScreen extends Component {
                 })
             })
             .catch(err => {
-                console.log(TAG, 'err find list note', err)
+                // console.log(TAG, 'err find list note', err)
                 this.setState({isLoading: false})
                 Toast.show(err.message)
             })

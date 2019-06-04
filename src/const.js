@@ -16,8 +16,10 @@ export const nameIndex = {
     PARENT_ID: 'index-parent_id'
 }
 
-export const remoteNoteDb = new PouchDB('http://duytq:123456@10.68.64.235:5984/note')
+const myIP = "192.168.1.3"
+
+export const remoteNoteDb = new PouchDB(`http://duytq:123456@${myIP}:5984/note`)
 export const localNoteDb = new PouchDB('note', {adapter: 'react-native-sqlite'})
 
-export const remoteDetailNoteDb = new PouchDB('http://duytq:123456@10.68.64.235:5984/detail_note')
+export const remoteDetailNoteDb = new PouchDB(`http://duytq:123456@${myIP}:5984/detail_note`)
 export const localDetailNoteDb = new PouchDB('detail_note', {adapter: 'react-native-sqlite'})
