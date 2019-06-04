@@ -1,6 +1,7 @@
 import {createAppContainer, createStackNavigator} from "react-navigation";
 import HomeScreen from "./Home/Home.Screen";
 import DetailScreen from "./Detail/Detail.Screen";
+import AddNewNoteScreen from "./AddNewNote/AddNewNote.Screen";
 
 const AppNavigator = createStackNavigator(
     {
@@ -13,6 +14,10 @@ const AppNavigator = createStackNavigator(
             screen: DetailScreen,
             navigationOptions: {gesturesEnabled: false}
         },
+        AddNewNoteScreen: {
+            screen: AddNewNoteScreen,
+            navigationOptions: {gesturesEnabled: false}
+        }
 
     },
     {headerMode: 'none'},

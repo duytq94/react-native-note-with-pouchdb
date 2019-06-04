@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {BackHandler, FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, BackHandler, FlatList, Text, TouchableOpacity, View} from 'react-native';
 import styles from './Home.Style';
 import PouchDB from '../pouchdb'
 import {localNoteDb, nameIndex, remoteNoteDb} from "../const";
@@ -57,6 +57,10 @@ export default class HomeScreen extends Component {
     }
 
     handleBackPress = () => {
+        Alert.alert("Confirm", "Are you sure to exit the application", [
+            {text: "NO"},
+            {text: "YES", onPress: () => BackHandler.exitApp()}
+        ])
         return true
     }
 
@@ -117,8 +121,16 @@ export default class HomeScreen extends Component {
         this.getListNoteFromDb()
     }
 
-    onAddNewPress = () => {
+    returnFromAddNewNote = () => {
+        this.isAtCurrentScreen = true
+        this.getListNoteFromDb()
+    }
 
+    onAddNewPress = () => {
+        this.isAtCurrentScreen = false
+        this.props.navigation.navigate('AddNewNoteScreen', {
+            returnFromAddNewNote: this.returnFromAddNewNote.bind(this)
+        })
     }
 
     // Render UI

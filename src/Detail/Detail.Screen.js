@@ -8,6 +8,8 @@ import {localDetailNoteDb, localNoteDb, nameIndex, remoteDetailNoteDb} from "../
 import ImagePicker from 'react-native-image-picker';
 import Toast from "react-native-simple-toast";
 import PouchDB from "../pouchdb";
+import moment from "moment";
+import {imgDefault} from "../images";
 
 const TAG = 'Detail.Screen.js'
 
@@ -38,6 +40,14 @@ export default class DetailScreen extends Component {
 
     componentDidMount() {
         this.syncDb()
+        // localDetailNoteDb.allDocs()
+        //     .then(response => {
+        //         console.log('aaa', response)
+        //     })
+        //     .catch(err => {
+        //         console.log('bbb', err)
+        //     })
+
         // remoteDetailNoteDb
         //     .createIndex({
         //         index: {
@@ -55,6 +65,7 @@ export default class DetailScreen extends Component {
     }
 
     handleBackPress = () => {
+        handlerSync.cancel()
         this.props.navigation.goBack()
         this.props.navigation.state.params.returnFromDetail()
         return true
@@ -62,7 +73,7 @@ export default class DetailScreen extends Component {
 
     syncDb = () => {
         this.setState({isLoading: true})
-        handlerSync = PouchDB.sync(remoteDetailNoteDb, localDetailNoteDb, {
+        handlerSync = PouchDB.sync(localDetailNoteDb, remoteDetailNoteDb, {
             live: true,
             retry: true,
         })
@@ -125,7 +136,6 @@ export default class DetailScreen extends Component {
         if ((this.refTextInputContent && this.refTextInputContent._lastNativeText) || this.state.newImage) {
             this.updateDetailNote()
         } else if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
-            console.log('aaa')
             this.updateNote()
         }
     }
@@ -145,12 +155,7 @@ export default class DetailScreen extends Component {
             )
             .then(response => {
                 if (response.updated) {
-                    if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
-                        this.updateNote()
-                    } else {
-                        Toast.show('Updated')
-                        this.setState({isLoading: false})
-                    }
+                    this.updateNote()
                 } else {
                     Toast.show('Update fail, please try again')
                     this.setState({isLoading: false})
@@ -164,11 +169,13 @@ export default class DetailScreen extends Component {
     }
 
     updateNote = () => {
-        console.log('bbb')
         this.setState({isLoading: true})
         localNoteDb
             .upsert(this.currentNote._id, doc => {
-                doc.title = this.refTextInputTitle._lastNativeText
+                if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
+                    doc.title = this.refTextInputTitle._lastNativeText
+                }
+                doc.updated_at = moment().unix()
                 return doc
             })
             .then(response => {
@@ -241,21 +248,13 @@ export default class DetailScreen extends Component {
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style={styles.body}>
 
-
-                    <View style={styles.viewWrapImage}>
+                    <TouchableOpacity onPress={this.openGallery}>
                         <Image style={styles.imgFeature}
-                               source={{uri: `data:image;base64,${this.state.newImage ? this.state.newImage : this.state.detailNote.img}`}}/>
-
-                        <TouchableOpacity
-                            style={styles.btnChangeImage}
-                            onPress={this.openGallery}
-                        >
-                            <MaterialCommunityIcons name={"camera"} size={20} color={colors.white}/>
-                        </TouchableOpacity>
-                    </View>
+                               source={this.state.newImage || this.state.detailNote.img ? {uri: `data:image;base64,${this.state.newImage ? this.state.newImage : this.state.detailNote.img}`} : imgDefault}/>
+                    </TouchableOpacity>
 
                     <TextInput
-                        style={styles.textContent}
+                        style={styles.textInputContent}
                         ref={ref => this.refTextInputContent = ref}
                         defaultValue={this.state.detailNote.content}
                         multiline={true}

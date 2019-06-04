@@ -14,39 +14,37 @@ export default StyleSheet.create({
         paddingBottom: 5
     },
 
-    // Title
-    viewWrapTitle: {
-        backgroundColor: colors.grey,
-        alignSelf: 'stretch',
-        paddingLeft: 10,
-        paddingRight: 10
-    },
     textTitle: {
         fontSize: fontSize.medium,
         color: colors.charcoalGrey,
-        fontFamily: fontFamily.demiBold
-    },
-
-    // Image
-    imgFeature: {
-        width: '95%',
-        height: 150,
-        resizeMode: 'contain',
+        fontFamily: fontFamily.demiBold,
         marginTop: 10,
+        marginBottom: 5
     },
-
-    // Text content
-    textInputContent: {
+    textInputTitle: {
+        borderWidth: 1,
+        borderColor: colors.grey,
+        borderRadius: 5,
         fontSize: fontSize.medium,
         color: colors.boldGrey,
         fontFamily: fontFamily.regular,
-        marginTop: 15,
+        padding: 10
+    },
+    textInputContent: {
         borderWidth: 1,
         borderColor: colors.grey,
         borderRadius: 5,
         minHeight: 100,
         textAlignVertical: 'top',
+        fontSize: fontSize.medium,
+        color: colors.boldGrey,
+        fontFamily: fontFamily.regular,
         padding: 10,
     },
+    img: {
+        width: '95%',
+        height: 150,
+        resizeMode: 'contain'
+    }
 
 })
