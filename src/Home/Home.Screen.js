@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Alert, BackHandler, FlatList, Text, TouchableOpacity, View} from 'react-native';
+import {Alert, BackHandler, FlatList, Text, TouchableOpacity, View, StatusBar} from 'react-native';
 import styles from './Home.Style';
 import PouchDB from '../pouchdb'
 import {localNoteDb, nameIndex, remoteNoteDb} from "../const";
@@ -133,6 +133,7 @@ export default class HomeScreen extends Component {
     render() {
         return (
             <View style={styles.mainContainer}>
+                <StatusBar barStyle="light-content" />
                 {this.renderToolbar()}
                 {this.renderBody()}
                 {this.renderLoading()}
