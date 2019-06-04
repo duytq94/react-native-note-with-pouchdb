@@ -8,6 +8,7 @@ import Toast from "react-native-simple-toast";
 import LoadingView from "../Components/LoadingView";
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import colors from "../Themes/Colors";
+import NoDataView from "../Components/NoDataView";
 
 let handlerSync = null
 
@@ -94,6 +95,7 @@ export default class HomeScreen extends Component {
     }
 
     getListNoteFromDb = () => {
+        this.setState({isLoading: true})
         localNoteDb
             .find({
                 selector: {
@@ -157,16 +159,20 @@ export default class HomeScreen extends Component {
     renderBody = () => {
         return (
             <View style={styles.body}>
-                <FlatList
-                    style={styles.viewList}
-                    data={this.state.arrNote}
-                    showsVerticalScrollIndicator={false}
-                    ItemSeparatorComponent={this.renderItemSeparator}
-                    ListHeaderComponent={this.renderFooterList}
-                    ListFooterComponent={this.renderFooterList}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={this.renderItem}
-                />
+                {this.state.arrNote && this.state.arrNote.length > 0 ?
+                    <FlatList
+                        style={styles.viewList}
+                        data={this.state.arrNote}
+                        showsVerticalScrollIndicator={false}
+                        ItemSeparatorComponent={this.renderItemSeparator}
+                        ListHeaderComponent={this.renderFooterList}
+                        ListFooterComponent={this.renderFooterList}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={this.renderItem}
+                    /> :
+                    <NoDataView onRetryPress={this.getListNoteFromDb}/>
+                }
+
 
                 <TouchableOpacity
                     style={styles.btnAddNew}

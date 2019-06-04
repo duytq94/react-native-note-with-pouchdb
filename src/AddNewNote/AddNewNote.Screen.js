@@ -52,7 +52,6 @@ export default class AddNewNoteScreen extends Component {
                 title: this.refTextInputTitle._lastNativeText,
                 updated_at: moment().unix()
             }
-            console.log('aaa', newNote)
             localNoteDb
                 .post(newNote)
                 .then(response => {
@@ -62,13 +61,11 @@ export default class AddNewNoteScreen extends Component {
                             content: this.refTextInputContent._lastNativeText,
                             img: this.state.image
                         }
-                        console.log('bbb', detailNote)
-
                         localDetailNoteDb
                             .post(detailNote)
                             .then(response => {
                                 if (response.ok) {
-                                    Toast.show('Add new not success')
+                                    Toast.show('Add new note success')
                                     this.handleBackPress()
                                 } else {
                                     Toast.show('Add new note fail')

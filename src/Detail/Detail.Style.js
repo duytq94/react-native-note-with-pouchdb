@@ -33,6 +33,7 @@ export default StyleSheet.create({
         height: 150,
         resizeMode: 'contain',
         marginTop: 10,
+        alignSelf: "center"
     },
 
     // Text content

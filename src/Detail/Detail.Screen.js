@@ -10,6 +10,7 @@ import Toast from "react-native-simple-toast";
 import PouchDB from "../pouchdb";
 import moment from "moment";
 import {imgDefault} from "../images";
+import NoDataView from "../Components/NoDataView";
 
 const TAG = 'Detail.Screen.js'
 
@@ -99,6 +100,8 @@ export default class DetailScreen extends Component {
     }
 
     getDetailNoteFromDb = () => {
+        this.setState({isLoading: true})
+
         localDetailNoteDb
             .find({
                 selector: {
@@ -195,13 +198,45 @@ export default class DetailScreen extends Component {
             })
     }
 
+    deleteNote = () => {
+        this.setState({isLoading: true})
+        localDetailNoteDb
+            .remove(this.state.detailNote._id, this.state.detailNote._rev)
+            .then(response => {
+                if (response.ok) {
+                    localNoteDb.remove(this.currentNote._id, this.currentNote._rev)
+                        .then(response => {
+                            if (response.ok) {
+                                this.handleBackPress()
+                            } else {
+                                Toast.show('Delete note fail')
+                                this.setState({isLoading: false})
+                            }
+                        })
+                        .catch(err => {
+                            console.log(TAG, err)
+                            Toast.show(err.message)
+                            this.setState({isLoading: false})
+                        })
+                } else {
+                    Toast.show('Delete note fail')
+                    this.setState({isLoading: false})
+                }
+            })
+            .catch(err => {
+                console.log(TAG, err)
+                Toast.show(err.message)
+                this.setState({isLoading: false})
+            })
+    }
+
     // Render UI
     render() {
         return (
             <View style={styles.mainContainer}>
                 {this.renderToolbar()}
                 {this.renderTitle()}
-                {this.state.detailNote ? this.renderBody() : null}
+                {this.state.detailNote ? this.renderBody() : <NoDataView onRetryPress={this.getDetailNoteFromDb}/>}
                 {this.renderLoading()}
             </View>
         )
@@ -221,10 +256,17 @@ export default class DetailScreen extends Component {
                 </View>
                 <TouchableOpacity
                     style={styles.viewWrapIcRight}
+                    onPress={this.deleteNote}
+                >
+                    <MaterialCommunityIcons name={'delete'} size={30} color={colors.white}/>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.viewWrapIcRight}
                     onPress={this.onSaveNotePress}
                 >
                     <MaterialCommunityIcons name={'check'} size={30} color={colors.white}/>
                 </TouchableOpacity>
+
             </View>
         )
     }
