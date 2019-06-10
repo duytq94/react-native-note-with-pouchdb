@@ -12,8 +12,6 @@ import ImagePicker from "react-native-image-picker";
 
 const TAG = 'AddNewNote.Screen.js'
 
-let handlerSync = null
-
 export default class AddNewNoteScreen extends Component {
 
     constructor(props) {
@@ -92,10 +90,9 @@ export default class AddNewNoteScreen extends Component {
 
     openGallery = () => {
         ImagePicker.showImagePicker({
-            compressImageMaxWidth: 500,
-            compressImageMaxHeight: 500,
+            maxWidth: 500,
+            maxHeight: 500,
             mediaType: 'photo',
-            multiple: false,
         }, image => {
             this.setState({image: image.data})
         })
