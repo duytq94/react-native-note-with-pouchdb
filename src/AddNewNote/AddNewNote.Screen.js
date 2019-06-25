@@ -32,10 +32,6 @@ export default class AddNewNoteScreen extends Component {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
     }
 
-    componentDidMount() {
-
-    }
-
     handleBackPress = () => {
         this.props.navigation.goBack()
         this.props.navigation.state.params.returnFromAddNewNote()

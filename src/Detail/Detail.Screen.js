@@ -60,7 +60,6 @@ export default class DetailScreen extends Component {
     }
 
     handleBackPress = () => {
-        handlerSync.cancel()
         this.props.navigation.goBack()
         this.props.navigation.state.params.returnFromDetail()
         return true
