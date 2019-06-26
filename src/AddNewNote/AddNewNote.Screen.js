@@ -1,13 +1,13 @@
-import React, {Component} from "react";
-import {BackHandler, Image, Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import React, { Component } from "react";
+import { BackHandler, Image, Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import styles from './AddNewNote.Style';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "../Themes/Colors";
 import LoadingView from "../Components/LoadingView";
-import {localDetailNoteDb, localNoteDb} from "../const";
+import { localDetailNoteDb, localNoteDb } from "../const";
 import moment from "moment";
 import Toast from "react-native-simple-toast";
-import {imgDefault} from "../images";
+import { imgDefault } from "../images";
 import ImagePicker from "react-native-image-picker";
 
 const TAG = 'AddNewNote.Screen.js'
@@ -20,16 +20,28 @@ export default class AddNewNoteScreen extends Component {
             isLoading: false,
             title: '',
             content: '',
-            image: null
+            image: null,
+            isKeyboardShow: false,
+            keyboardHeight: 0,
         }
     }
 
     componentWillMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
+        this.keyboardDidShowListener = Keyboard.addListener(
+            'keyboardDidShow',
+            this.keyboardDidShow
+        )
+        this.keyboardDidHideListener = Keyboard.addListener(
+            'keyboardDidHide',
+            this.keyboardDidHide
+        )
     }
 
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+        this.keyboardDidShowListener.remove()
+        this.keyboardDidHideListener.remove()
     }
 
     handleBackPress = () => {
@@ -38,10 +50,23 @@ export default class AddNewNoteScreen extends Component {
         return true
     }
 
+    keyboardDidShow = (e) => {
+        this.setState({
+            isKeyboardShow: true,
+            keyboardHeight: e.endCoordinates.height
+        })
+    }
+
+    keyboardDidHide = () => {
+        this.setState({
+            isKeyboardShow: false
+        })
+    }
+
     onSaveNotePress = () => {
         Keyboard.dismiss()
         if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText && this.refTextInputContent && this.refTextInputContent._lastNativeText) {
-            this.setState({isLoading: true})
+            this.setState({ isLoading: true })
             let newNote = {
                 title: this.refTextInputTitle._lastNativeText,
                 updated_at: moment().unix()
@@ -63,23 +88,23 @@ export default class AddNewNoteScreen extends Component {
                                     this.handleBackPress()
                                 } else {
                                     Toast.show('Add new note fail')
-                                    this.setState({isLoading: false})
+                                    this.setState({ isLoading: false })
                                 }
                             })
                             .catch(err => {
                                 console.log(TAG, err)
                                 Toast.show(err.message)
-                                this.setState({isLoading: false})
+                                this.setState({ isLoading: false })
                             })
                     } else {
                         Toast.show('Add new note fail')
-                        this.setState({isLoading: false})
+                        this.setState({ isLoading: false })
                     }
                 })
                 .catch(err => {
                     console.log(TAG, err)
                     Toast.show(err.message)
-                    this.setState({isLoading: false})
+                    this.setState({ isLoading: false })
                 })
         }
     }
@@ -90,7 +115,7 @@ export default class AddNewNoteScreen extends Component {
             maxHeight: 500,
             mediaType: 'photo',
         }, image => {
-            this.setState({image: image.data})
+            this.setState({ image: image.data })
         })
     }
 
@@ -112,7 +137,7 @@ export default class AddNewNoteScreen extends Component {
                     style={styles.viewWrapIcLeft}
                     onPress={this.handleBackPress}
                 >
-                    <MaterialCommunityIcons name={'arrow-left'} size={30} color={colors.white}/>
+                    <MaterialCommunityIcons name={'arrow-left'} size={30} color={colors.white} />
                 </TouchableOpacity>
                 <View style={styles.viewWrapTitleToolbar}>
                     <Text style={styles.titleToolbar}>Add new</Text>
@@ -121,7 +146,7 @@ export default class AddNewNoteScreen extends Component {
                     style={styles.viewWrapIcRight}
                     onPress={this.onSaveNotePress}
                 >
-                    <MaterialCommunityIcons name={'check'} size={30} color={colors.white}/>
+                    <MaterialCommunityIcons name={'check'} size={30} color={colors.white} />
                 </TouchableOpacity>
             </View>
         )
@@ -137,7 +162,7 @@ export default class AddNewNoteScreen extends Component {
                         onPress={this.openGallery}
                     >
                         <Image style={styles.img}
-                               source={this.state.image ? {uri: `data:image;base64,${this.state.image}`} : imgDefault}/>
+                            source={this.state.image ? { uri: `data:image;base64,${this.state.image}` } : imgDefault} />
                     </TouchableOpacity>
 
                     <Text style={styles.textTitle}>Title</Text>
@@ -161,6 +186,11 @@ export default class AddNewNoteScreen extends Component {
                         autoCorrect={false}
                     />
 
+                    {
+                        this.state.isKeyboardShow && Platform.OS === 'ios' ?
+                            <View style={{ height: this.state.keyboardHeight }} /> :
+                            null
+                    }
                 </View>
             </ScrollView>
         )
@@ -169,7 +199,7 @@ export default class AddNewNoteScreen extends Component {
     renderLoading = () => {
         if (this.state.isLoading) {
             return (
-                <LoadingView/>
+                <LoadingView />
             )
         } else {
             return null
