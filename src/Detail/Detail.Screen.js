@@ -1,15 +1,25 @@
-import React, { Component } from "react";
-import { BackHandler, Image, Keyboard, ScrollView, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
+import React, {Component} from "react";
+import {
+    BackHandler,
+    Image,
+    Keyboard,
+    Platform,
+    ScrollView,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from 'react-native';
 import styles from './Detail.Style';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "../Themes/Colors";
 import LoadingView from "../Components/LoadingView";
-import { localDetailNoteDb, localNoteDb, nameIndex, remoteDetailNoteDb } from "../const";
+import {localDetailNoteDb, localNoteDb, nameIndex, remoteDetailNoteDb} from "../const";
 import ImagePicker from 'react-native-image-picker';
 import Toast from "react-native-simple-toast";
 import PouchDB from "../pouchdb";
 import moment from "moment";
-import { imgDefault } from "../images";
+import {imgDefault} from "../images";
 import NoDataView from "../Components/NoDataView";
 
 const TAG = 'Detail.Screen.js'
@@ -118,7 +128,7 @@ export default class DetailScreen extends Component {
     }
 
     getDetailNoteFromDb = () => {
-        this.setState({ isLoading: true })
+        this.setState({isLoading: true})
 
         localDetailNoteDb
             .find({
@@ -136,7 +146,7 @@ export default class DetailScreen extends Component {
             })
             .catch(err => {
                 console.log(TAG, 'err find list note', err)
-                this.setState({ isLoading: false })
+                this.setState({isLoading: false})
                 Toast.show(err.message)
             })
     }
@@ -148,7 +158,7 @@ export default class DetailScreen extends Component {
             mediaType: 'photo',
             multiple: false,
         }, image => {
-            this.setState({ newImage: image.data })
+            this.setState({newImage: image.data})
         })
     }
 
@@ -162,35 +172,35 @@ export default class DetailScreen extends Component {
     }
 
     updateDetailNote = () => {
-        this.setState({ isLoading: true })
+        this.setState({isLoading: true})
         localDetailNoteDb
             .upsert(this.state.detailNote._id, doc => {
-                if (this.state.newImage) {
-                    doc.img = this.state.newImage
+                    if (this.state.newImage) {
+                        doc.img = this.state.newImage
+                    }
+                    if (this.refTextInputContent && this.refTextInputContent._lastNativeText) {
+                        doc.content = this.refTextInputContent._lastNativeText
+                    }
+                    return doc
                 }
-                if (this.refTextInputContent && this.refTextInputContent._lastNativeText) {
-                    doc.content = this.refTextInputContent._lastNativeText
-                }
-                return doc
-            }
             )
             .then(response => {
                 if (response.updated) {
                     this.updateNote()
                 } else {
                     Toast.show('Update fail, please try again')
-                    this.setState({ isLoading: false })
+                    this.setState({isLoading: false})
                 }
             })
             .catch(err => {
                 console.log(TAG, err)
                 Toast.show(err.message)
-                this.setState({ isLoading: false })
+                this.setState({isLoading: false})
             })
     }
 
     updateNote = () => {
-        this.setState({ isLoading: true })
+        this.setState({isLoading: true})
         localNoteDb
             .upsert(this.currentNote._id, doc => {
                 if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
@@ -202,22 +212,22 @@ export default class DetailScreen extends Component {
             .then(response => {
                 if (response.updated) {
                     Toast.show('Updated')
-                    this.setState({ isLoading: false })
+                    this.setState({isLoading: false})
                 } else {
                     Toast.show('Update fail, please try again')
-                    this.setState({ isLoading: false })
+                    this.setState({isLoading: false})
                 }
 
             })
             .catch(err => {
                 console.log(TAG, err)
                 Toast.show(err.message)
-                this.setState({ isLoading: false })
+                this.setState({isLoading: false})
             })
     }
 
     deleteNote = () => {
-        this.setState({ isLoading: true })
+        this.setState({isLoading: true})
         localDetailNoteDb
             .remove(this.state.detailNote._id, this.state.detailNote._rev)
             .then(response => {
@@ -228,23 +238,23 @@ export default class DetailScreen extends Component {
                                 this.handleBackPress()
                             } else {
                                 Toast.show('Delete note fail')
-                                this.setState({ isLoading: false })
+                                this.setState({isLoading: false})
                             }
                         })
                         .catch(err => {
                             console.log(TAG, err)
                             Toast.show(err.message)
-                            this.setState({ isLoading: false })
+                            this.setState({isLoading: false})
                         })
                 } else {
                     Toast.show('Delete note fail')
-                    this.setState({ isLoading: false })
+                    this.setState({isLoading: false})
                 }
             })
             .catch(err => {
                 console.log(TAG, err)
                 Toast.show(err.message)
-                this.setState({ isLoading: false })
+                this.setState({isLoading: false})
             })
     }
 
@@ -254,7 +264,7 @@ export default class DetailScreen extends Component {
             <View style={styles.mainContainer}>
                 {this.renderToolbar()}
                 {this.renderTitle()}
-                {this.state.detailNote ? this.renderBody() : <NoDataView onRetryPress={this.getDetailNoteFromDb} />}
+                {this.state.detailNote ? this.renderBody() : <NoDataView onRetryPress={this.getDetailNoteFromDb}/>}
                 {this.renderLoading()}
             </View>
         )
@@ -267,7 +277,7 @@ export default class DetailScreen extends Component {
                     style={styles.viewWrapIcLeft}
                     onPress={this.handleBackPress}
                 >
-                    <MaterialCommunityIcons name={'arrow-left'} size={30} color={colors.white} />
+                    <MaterialCommunityIcons name={'arrow-left'} size={30} color={colors.white}/>
                 </TouchableOpacity>
                 <View style={styles.viewWrapTitleToolbar}>
                     <Text style={styles.titleToolbar}>Detail</Text>
@@ -276,13 +286,13 @@ export default class DetailScreen extends Component {
                     style={styles.viewWrapIcRight}
                     onPress={this.deleteNote}
                 >
-                    <MaterialCommunityIcons name={'delete'} size={30} color={colors.white} />
+                    <MaterialCommunityIcons name={'delete'} size={30} color={colors.white}/>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.viewWrapIcRight}
                     onPress={this.onSaveNotePress}
                 >
-                    <MaterialCommunityIcons name={'check'} size={30} color={colors.white} />
+                    <MaterialCommunityIcons name={'check'} size={30} color={colors.white}/>
                 </TouchableOpacity>
 
             </View>
@@ -310,7 +320,7 @@ export default class DetailScreen extends Component {
 
                     <TouchableOpacity onPress={this.openGallery}>
                         <Image style={styles.imgFeature}
-                            source={this.state.newImage || this.state.detailNote.img ? { uri: `data:image;base64,${this.state.newImage ? this.state.newImage : this.state.detailNote.img}` } : imgDefault} />
+                               source={this.state.newImage || this.state.detailNote.img ? {uri: `data:image;base64,${this.state.newImage ? this.state.newImage : this.state.detailNote.img}`} : imgDefault}/>
                     </TouchableOpacity>
 
                     <TextInput
@@ -324,7 +334,7 @@ export default class DetailScreen extends Component {
 
                 {
                     this.state.isKeyboardShow && Platform.OS === 'ios' ?
-                        <View style={{ height: this.state.keyboardHeight }} /> :
+                        <View style={{height: this.state.keyboardHeight}}/> :
                         null
                 }
             </ScrollView>
@@ -334,7 +344,7 @@ export default class DetailScreen extends Component {
     renderLoading = () => {
         if (this.state.isLoading) {
             return (
-                <LoadingView />
+                <LoadingView/>
             )
         } else {
             return null
