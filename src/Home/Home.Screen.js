@@ -100,14 +100,14 @@ export default class HomeScreen extends Component {
                 sort: [{updated_at: 'desc'}]
             })
             .then(result => {
-                console.log(TAG, 'find list note', result)
+                // console.log(TAG, 'getListNoteFromDb', result)
                 this.setState({
                     isLoading: false,
                     arrNote: [...result.docs]
                 })
             })
             .catch(err => {
-                // console.log(TAG, 'err find list note', err)
+                // console.log(TAG, 'err getListNoteFromDb', err)
                 this.setState({isLoading: false})
                 Toast.show(err.message)
             })

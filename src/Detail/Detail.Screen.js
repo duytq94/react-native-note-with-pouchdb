@@ -111,7 +111,6 @@ export default class DetailScreen extends Component {
 
     getDetailNoteFromDb = () => {
         this.setState({isLoading: true})
-
         localNoteDb
             .get(this.idNote)
             .then(result => {
@@ -123,8 +122,13 @@ export default class DetailScreen extends Component {
             })
             .catch(err => {
                 console.log(TAG, 'err find list note', err)
-                this.setState({isLoading: false})
-                Toast.show(err.message)
+                if (err.message === 'missing') {
+                    Toast.show('This note has been deleted')
+                    this.handleBackPress()
+                } else {
+                    this.setState({isLoading: false})
+                    Toast.show(err.message)
+                }
             })
     }
 
