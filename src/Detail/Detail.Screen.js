@@ -14,7 +14,7 @@ import styles from './Detail.Style';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "../Themes/Colors";
 import LoadingView from "../Components/LoadingView";
-import {localDetailNoteDb, localNoteDb, nameIndex, remoteDetailNoteDb} from "../const";
+import {localNoteDb, remoteNoteDb} from "../const";
 import ImagePicker from 'react-native-image-picker';
 import Toast from "react-native-simple-toast";
 import PouchDB from "../pouchdb";
@@ -30,7 +30,7 @@ export default class DetailScreen extends Component {
 
     constructor(props) {
         super(props)
-        this.currentNote = this.props.navigation.state.params.note
+        this.idNote = this.props.navigation.state.params.idNote
         this.refTextInputContent = null
         this.refTextInputTitle = null
         this.state = {
@@ -64,21 +64,6 @@ export default class DetailScreen extends Component {
     componentDidMount() {
         this.syncDb()
         this.getDetailNoteFromDb()
-
-        // remoteDetailNoteDb
-        //     .createIndex({
-        //         index: {
-        //             fields: ['parent_id'],
-        //             name: nameIndex.PARENT_ID,
-        //             ddoc: nameIndex.PARENT_ID,
-        //         }
-        //     })
-        //     .then((result) => {
-        //         console.log(TAG, result)
-        //     })
-        //     .catch((err) => {
-        //         console.log(TAG, err)
-        //     })
     }
 
     handleBackPress = () => {
@@ -95,13 +80,11 @@ export default class DetailScreen extends Component {
     }
 
     keyboardDidHide = () => {
-        this.setState({
-            isKeyboardShow: false
-        })
+        this.setState({isKeyboardShow: false})
     }
 
     syncDb = () => {
-        handlerSync = PouchDB.sync(localDetailNoteDb, remoteDetailNoteDb, {
+        handlerSync = PouchDB.sync(remoteNoteDb, localNoteDb, {
             live: true,
             retry: true,
         })
@@ -114,7 +97,6 @@ export default class DetailScreen extends Component {
             })
             .on('active', () => {
                 // console.log(TAG, 'sync onActive')
-                this.getDetailNoteFromDb()
             })
             .on('denied', (err) => {
                 // console.log(TAG, 'sync onDenied', err)
@@ -130,18 +112,13 @@ export default class DetailScreen extends Component {
     getDetailNoteFromDb = () => {
         this.setState({isLoading: true})
 
-        localDetailNoteDb
-            .find({
-                selector: {
-                    parent_id: this.currentNote._id
-                },
-                use_index: nameIndex.PARENT_ID,
-            })
+        localNoteDb
+            .get(this.idNote)
             .then(result => {
-                // console.log(TAG, 'find list note', result)
+                // console.log(TAG, 'localNoteDb get', result)
                 this.setState({
                     isLoading: false,
-                    detailNote: result.docs[0]
+                    detailNote: result
                 })
             })
             .catch(err => {
@@ -164,47 +141,21 @@ export default class DetailScreen extends Component {
 
     onSaveNotePress = () => {
         Keyboard.dismiss()
-        if ((this.refTextInputContent && this.refTextInputContent._lastNativeText) || this.state.newImage) {
-            this.updateDetailNote()
-        } else if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
-            this.updateNote()
-        }
-    }
-
-    updateDetailNote = () => {
-        this.setState({isLoading: true})
-        localDetailNoteDb
-            .upsert(this.state.detailNote._id, doc => {
-                    if (this.state.newImage) {
-                        doc.img = this.state.newImage
-                    }
-                    if (this.refTextInputContent && this.refTextInputContent._lastNativeText) {
-                        doc.content = this.refTextInputContent._lastNativeText
-                    }
-                    return doc
-                }
-            )
-            .then(response => {
-                if (response.updated) {
-                    this.updateNote()
-                } else {
-                    Toast.show('Update fail, please try again')
-                    this.setState({isLoading: false})
-                }
-            })
-            .catch(err => {
-                console.log(TAG, err)
-                Toast.show(err.message)
-                this.setState({isLoading: false})
-            })
+        this.updateNote()
     }
 
     updateNote = () => {
         this.setState({isLoading: true})
         localNoteDb
-            .upsert(this.currentNote._id, doc => {
+            .upsert(this.idNote, doc => {
                 if (this.refTextInputTitle && this.refTextInputTitle._lastNativeText) {
                     doc.title = this.refTextInputTitle._lastNativeText
+                }
+                if (this.state.newImage) {
+                    doc.img = this.state.newImage
+                }
+                if (this.refTextInputContent && this.refTextInputContent._lastNativeText) {
+                    doc.content = this.refTextInputContent._lastNativeText
                 }
                 doc.updated_at = moment().unix()
                 return doc
@@ -228,24 +179,10 @@ export default class DetailScreen extends Component {
 
     deleteNote = () => {
         this.setState({isLoading: true})
-        localDetailNoteDb
-            .remove(this.state.detailNote._id, this.state.detailNote._rev)
+        localNoteDb.remove(this.idNote, this.state.detailNote._rev)
             .then(response => {
                 if (response.ok) {
-                    localNoteDb.remove(this.currentNote._id, this.currentNote._rev)
-                        .then(response => {
-                            if (response.ok) {
-                                this.handleBackPress()
-                            } else {
-                                Toast.show('Delete note fail')
-                                this.setState({isLoading: false})
-                            }
-                        })
-                        .catch(err => {
-                            console.log(TAG, err)
-                            Toast.show(err.message)
-                            this.setState({isLoading: false})
-                        })
+                    this.handleBackPress()
                 } else {
                     Toast.show('Delete note fail')
                     this.setState({isLoading: false})
@@ -305,7 +242,7 @@ export default class DetailScreen extends Component {
                 <TextInput
                     style={styles.textTitle}
                     ref={ref => this.refTextInputTitle = ref}
-                    defaultValue={this.currentNote.title}
+                    defaultValue={this.state.detailNote ? this.state.detailNote.title : ''}
                     multiline={true}
                     autoCorrect={false}
                 />

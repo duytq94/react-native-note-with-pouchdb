@@ -14,7 +14,7 @@ import styles from './AddNewNote.Style';
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import colors from "../Themes/Colors";
 import LoadingView from "../Components/LoadingView";
-import {localDetailNoteDb, localNoteDb} from "../const";
+import {localNoteDb} from "../const";
 import moment from "moment";
 import Toast from "react-native-simple-toast";
 import {imgDefault} from "../images";
@@ -79,33 +79,16 @@ export default class AddNewNoteScreen extends Component {
             this.setState({isLoading: true})
             let newNote = {
                 title: this.refTextInputTitle._lastNativeText,
-                updated_at: moment().unix()
+                updated_at: moment().unix(),
+                content: this.refTextInputContent._lastNativeText,
+                img: this.state.image
             }
             localNoteDb
                 .post(newNote)
                 .then(response => {
                     if (response.ok) {
-                        let detailNote = {
-                            parent_id: response.id,
-                            content: this.refTextInputContent._lastNativeText,
-                            img: this.state.image
-                        }
-                        localDetailNoteDb
-                            .post(detailNote)
-                            .then(response => {
-                                if (response.ok) {
-                                    Toast.show('Add new note success')
-                                    this.handleBackPress()
-                                } else {
-                                    Toast.show('Add new note fail')
-                                    this.setState({isLoading: false})
-                                }
-                            })
-                            .catch(err => {
-                                console.log(TAG, err)
-                                Toast.show(err.message)
-                                this.setState({isLoading: false})
-                            })
+                        Toast.show('Add new note success')
+                        this.handleBackPress()
                     } else {
                         Toast.show('Add new note fail')
                         this.setState({isLoading: false})

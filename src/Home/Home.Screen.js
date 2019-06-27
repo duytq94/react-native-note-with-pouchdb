@@ -95,11 +95,12 @@ export default class HomeScreen extends Component {
                 selector: {
                     updated_at: {$gt: true}
                 },
+                fields: ['_id', 'title', 'updated_at'],
                 use_index: nameIndex.UPDATED_AT,
                 sort: [{updated_at: 'desc'}]
             })
             .then(result => {
-                // console.log(TAG, 'find list note', result)
+                console.log(TAG, 'find list note', result)
                 this.setState({
                     isLoading: false,
                     arrNote: [...result.docs]
@@ -186,7 +187,7 @@ export default class HomeScreen extends Component {
                 onPress={() => {
                     this.isAtCurrentScreen = false
                     this.props.navigation.navigate('DetailScreen', {
-                        note: item,
+                        idNote: item._id,
                         returnFromDetail: this.returnFromDetail.bind(this)
                     })
                 }}
