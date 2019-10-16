@@ -25,16 +25,13 @@ export default class HomeScreen extends Component {
         this.isAtCurrentScreen = true
     }
 
-    componentWillMount() {
-        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
-    }
-
     componentWillUnmount() {
         BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
         handlerSync.cancel()
     }
 
     componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
         this.syncDb()
         this.getListNoteFromDb()
 

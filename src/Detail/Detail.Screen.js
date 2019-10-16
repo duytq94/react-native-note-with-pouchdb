@@ -42,7 +42,14 @@ export default class DetailScreen extends Component {
         }
     }
 
-    componentWillMount() {
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
+        handlerSync.cancel()
+        this.keyboardDidShowListener.remove()
+        this.keyboardDidHideListener.remove()
+    }
+
+    componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',
@@ -52,16 +59,6 @@ export default class DetailScreen extends Component {
             'keyboardDidHide',
             this.keyboardDidHide
         )
-    }
-
-    componentWillUnmount() {
-        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress)
-        handlerSync.cancel()
-        this.keyboardDidShowListener.remove()
-        this.keyboardDidHideListener.remove()
-    }
-
-    componentDidMount() {
         this.syncDb()
         this.getDetailNoteFromDb()
     }

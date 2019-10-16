@@ -1,0 +1,26 @@
+{
+  "name": "RNSqlite2",
+  "version": "1.0.0",
+  "summary": "RNSqlite2",
+  "description": "RNSqlite2",
+  "homepage": "https://github.com/craftzdog/react-native-sqlite-2",
+  "license": "Apache 2.0",
+  "authors": {
+    "author": "hi@craftz.dog"
+  },
+  "platforms": {
+    "ios": "7.0"
+  },
+  "source": {
+    "git": "https://github.com/craftzdog/react-native-sqlite-2.git",
+    "tag": "master"
+  },
+  "source_files": "**/*.{h,m}",
+  "requires_arc": true,
+  "libraries": "sqlite3",
+  "dependencies": {
+    "React": [
+
+    ]
+  }
+}

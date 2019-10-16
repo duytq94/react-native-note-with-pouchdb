@@ -36,7 +36,7 @@ export default class AddNewNoteScreen extends Component {
         }
     }
 
-    componentWillMount() {
+    componentDidMount() {
         BackHandler.addEventListener('hardwareBackPress', this.handleBackPress)
         this.keyboardDidShowListener = Keyboard.addListener(
             'keyboardDidShow',

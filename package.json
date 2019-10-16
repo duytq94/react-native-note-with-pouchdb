@@ -17,14 +17,15 @@
     "pouchdb-find": "^7.0.0",
     "pouchdb-mapreduce": "^7.0.0",
     "pouchdb-upsert": "^2.2.0",
-    "react": "16.8.3",
-    "react-native": "0.59.8",
+    "react": "^16.8.6",
+    "react-native": "^0.60.5",
     "react-native-gesture-handler": "^1.2.1",
     "react-native-image-picker": "^0.28.1",
-    "react-native-simple-toast": "0.0.8",
+    "react-native-simple-toast": "^0.1.1",
     "react-native-sqlite-2": "^2.0.2",
     "react-native-vector-icons": "^6.4.2",
-    "react-navigation": "^3.11.0"
+    "react-navigation": "^4.0.10",
+    "react-navigation-stack": "^1.9.4"
   },
   "devDependencies": {
     "@babel/core": "7.4.5",
@@ -36,10 +37,5 @@
   },
   "jest": {
     "preset": "react-native"
-  },
-  "rnpm": {
-    "assets": [
-      "./assets/fonts/"
-    ]
   }
 }
