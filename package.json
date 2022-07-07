@@ -11,7 +11,7 @@
     "@craftzdog/pouchdb-replication-react-native": "^7.0.0",
     "base-64": "^0.1.0",
     "events": "^3.0.0",
-    "moment": "^2.24.0",
+    "moment": "^2.29.4",
     "pouchdb-adapter-http": "^7.0.0",
     "pouchdb-adapter-react-native-sqlite": "^2.0.0",
     "pouchdb-find": "^7.0.0",
